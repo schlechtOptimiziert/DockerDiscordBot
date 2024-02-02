@@ -1,1 +1,0 @@
-docker build -t xenon54123596/discordmcbot -f Dockerfile .

@@ -1,0 +1,1 @@
+docker build -t xenon54123596/discordmcbot -f Dockerfile --platform linux/arm64/v8 .

@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  minecraft-server:
+    image: itzg/minecraft-server
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      MEMORY: "2G"
+    restart: unless-stopped
+    volumes:
+      - F:\DockerImage\ServerMitGlabbebel:/data
+
+  discord-bot:
+    build:
+      context: .\..\PnPBot
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - minecraft-server
