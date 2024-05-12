@@ -24,7 +24,12 @@ public class CommandHandler
         var guildCommands = new List<SlashCommandBuilder>()
         {
             new SlashCommandBuilder()
-                .WithName("tunnels").WithDescription("Gets the list of running tunnels.")
+                .WithName("Tunnels")
+                .WithDescription("Gets the list of running tunnels."),
+            new SlashCommandBuilder()
+                .WithName("WhitelistAdd")
+                .WithDescription("Whitelists a user.")
+                .AddOption("Name", ApplicationCommandOptionType.String, "User to be whitelisted"),
         };
 
         try
@@ -43,8 +48,11 @@ public class CommandHandler
     {
         switch (command.Data.Name)
         {
-            case "tunnels":
+            case "Tunnels":
                 await _commands.GetTunnelsCommand(command);
+                break;
+            case "WhitelistAdd":
+                await _commands.WhitelistAddCommand(command);
                 break;
         }
     }

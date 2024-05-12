@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PnPBot.Commands;
 using PnPBot.Exceptions;
 using PnPBot.Sevices;
+using PnPBot.Sevices.Rcon;
 
 namespace PnPBot;
 
@@ -27,6 +28,7 @@ public class Program
 
         collection.AddSingleton<Logger>();
         collection.AddSingleton<NgrokService>();
+        collection.AddSingleton<RconService>();
 
         collection.AddSingleton<CommandHandler>();
         collection.AddSingleton<TextCommands>();

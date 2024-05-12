@@ -6,8 +6,9 @@ services:
       VERSION: "1.20.4"
       DIFFICULTY: "normal"
       SPAWN_PROTECTION: 0
-      ENABLE_WHITELIST: FALSE
-      #WHITELIST_FILE: "./data/whitelist.json"
+      ENABLE_WHITELIST: TRUE
+      ENABLE_RCON: TRUE
+      RCON_PASSWORD: 'RconPassword'
     volumes:
       - ./Server:/data
 
@@ -29,6 +30,8 @@ services:
     environment:
       DISCORD_BOT_TOKEN: "To be set"
       NGROK_IP: "ngrok"
+      RCON_IP: 'mcserver'
+      RCON_PASSWORD: 'RconPassword'
     depends_on:
       - mcserver
       - ngrok
