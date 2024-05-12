@@ -13,4 +13,3 @@ bld/
 
 /Server/*
 !/Server/Here-is-the-game-save
-/.env
