@@ -5,9 +5,8 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
-RUN apt-get update && apt-get install -y openjdk-17-jre-headless
 WORKDIR /App
 
-COPY --from=build-env /App/out ./DiscordBot/
+COPY --from=build-env /App/out ./App/
 
-ENTRYPOINT ["dotnet", "DiscordBot/PnPBot.dll"]
+ENTRYPOINT ["dotnet", "App/PnPBot.dll"]

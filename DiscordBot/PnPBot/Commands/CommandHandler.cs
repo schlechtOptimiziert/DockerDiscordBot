@@ -1,10 +1,10 @@
-﻿using Discord;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PnPBot.Commands;
 
@@ -24,19 +24,13 @@ public class CommandHandler
         var guildCommands = new List<SlashCommandBuilder>()
         {
             new SlashCommandBuilder()
-                .WithName("start").WithDescription("Starts MC Server."),
-            new SlashCommandBuilder()
-                .WithName("status").WithDescription("Prints the status."),
-            new SlashCommandBuilder()
-                .WithName("stop").WithDescription("Stops MC Server."),
+                .WithName("tunnels").WithDescription("Gets the list of running tunnels.")
         };
 
         try
         {
             foreach (var command in guildCommands)
-            {
                 await _client.Rest.CreateGlobalCommand(command.Build());
-            }
         }
         catch (HttpException exception)
         {
@@ -49,14 +43,8 @@ public class CommandHandler
     {
         switch (command.Data.Name)
         {
-            case "start":
-                await _commands.StartCommand(command);
-                break;
-            case "status":
-                await _commands.StatusCommand(command);
-                break;
-            case "stop":
-                await _commands.StopCommand(command);
+            case "tunnels":
+                await _commands.GetTunnelsCommand(command);
                 break;
         }
     }

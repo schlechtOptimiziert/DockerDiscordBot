@@ -8,7 +8,6 @@ services:
       SPAWN_PROTECTION: 0
       ENABLE_WHITELIST: FALSE
       #WHITELIST_FILE: "./data/whitelist.json"
-    network_mode: "host"
     volumes:
       - ./Server:/data
 
@@ -17,14 +16,19 @@ services:
     restart: unless-stopped
     command:
       - "tcp"
-      - "25565"
+      - "mcserver:25565"
     environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    network_mode: "host"
+      NGROK_AUTHTOKEN: 'To be set'
+    ports:
+      - 4040:4040
     depends_on:
       - mcserver
 
-#  discordbot:
-#    build: .
-#    environment:
-#      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+  discordbot:
+    build: ./DiscordBot
+    environment:
+      DISCORD_BOT_TOKEN: "To be set"
+      NGROK_IP: "ngrok"
+    depends_on:
+      - mcserver
+      - ngrok
