@@ -10,6 +10,7 @@ namespace PnPBot.Commands;
 
 public class CommandHandler
 {
+    private readonly ulong guildId = 761077082347929610;
     private readonly DiscordSocketClient _client;
     private readonly TextCommands _commands;
 
@@ -24,18 +25,19 @@ public class CommandHandler
         var guildCommands = new List<SlashCommandBuilder>()
         {
             new SlashCommandBuilder()
-                .WithName("Tunnels")
+                .WithName("tunnels")
                 .WithDescription("Gets the list of running tunnels."),
             new SlashCommandBuilder()
-                .WithName("WhitelistAdd")
+                .WithName("whitelistadd")
                 .WithDescription("Whitelists a user.")
-                .AddOption("Name", ApplicationCommandOptionType.String, "User to be whitelisted"),
+                .AddOption("name", ApplicationCommandOptionType.String, "User to be whitelisted", isRequired: true),
         };
 
         try
         {
+            //await _client.Rest.DeleteAllGlobalCommandsAsync().ConfigureAwait(false);
             foreach (var command in guildCommands)
-                await _client.Rest.CreateGlobalCommand(command.Build());
+                await _client.Rest.CreateGuildCommand(command.Build(), guildId);
         }
         catch (HttpException exception)
         {
@@ -48,10 +50,10 @@ public class CommandHandler
     {
         switch (command.Data.Name)
         {
-            case "Tunnels":
+            case "tunnels":
                 await _commands.GetTunnelsCommand(command);
                 break;
-            case "WhitelistAdd":
+            case "whitelistadd":
                 await _commands.WhitelistAddCommand(command);
                 break;
         }

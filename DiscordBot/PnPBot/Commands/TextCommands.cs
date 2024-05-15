@@ -40,9 +40,17 @@ public sealed class TextCommands
 
     public async Task WhitelistAddCommand(SocketSlashCommand command)
     {
+        var embedBuiler = new EmbedBuilder()
+        .WithTitle("WhitelistAdd:")
+        .WithDescription("On it")
+        .WithColor(Color.DarkBlue)
+        .WithCurrentTimestamp();
+
+        await command.RespondAsync(embed: embedBuiler.Build());
+
         var output = await rconService.AddToWhitelistAsync(command.Data.Options.First().Value.ToString()).ConfigureAwait(false);
 
-        var embedBuiler = new EmbedBuilder()
+        embedBuiler = new EmbedBuilder()
             .WithTitle("WhitelistAdd:")
             .WithDescription(output)
             .WithColor(Color.DarkBlue)
