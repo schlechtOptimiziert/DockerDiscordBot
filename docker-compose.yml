@@ -1,3 +1,12 @@
+networks:
+  customNetwork:
+    driver: bridge
+    name: customNetwork
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
+
 services:
   mcserver:
     image: itzg/minecraft-server
@@ -8,20 +17,26 @@ services:
       SPAWN_PROTECTION: 0
       ENABLE_WHITELIST: TRUE
       ENABLE_RCON: TRUE
-      RCON_PASSWORD: 'RconPassword'
+      RCON_PASSWORD: "RconPassword"
     volumes:
       - ./Server:/data
+    networks:
+      customNetwork:
+        ipv4_address: 192.168.0.10
 
   ngrok:
     image: ngrok/ngrok:latest
     restart: unless-stopped
     command:
       - "tcp"
-      - "mcserver:25565"
+      - "192.168.0.10:25565"
     environment:
       NGROK_AUTHTOKEN: 'To be set'
     ports:
       - 4040:4040
+    networks:
+      customNetwork:
+        ipv4_address: 192.168.0.11
     depends_on:
       - mcserver
 
@@ -29,9 +44,14 @@ services:
     build: ./DiscordBot
     environment:
       DISCORD_BOT_TOKEN: "To be set"
-      NGROK_IP: "ngrok"
-      RCON_IP: 'mcserver'
-      RCON_PASSWORD: 'RconPassword'
+      NGROK_IP: "192.168.0.11"
+      RCON_IP: "192.168.0.10"
+      RCON_PASSWORD: "RconPassword"
+    networks:
+      customNetwork:
+        ipv4_address: 192.168.0.12
     depends_on:
-      - mcserver
-      - ngrok
+      mcserver:
+        condition: service_healthy
+      ngrok:
+        condition: service_started
