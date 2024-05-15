@@ -1,13 +1,14 @@
-﻿using Discord.WebSocket;
-using Discord;
-using Microsoft.Extensions.DependencyInjection;
-using PnPBot.Sevices;
-using PnPBot.Commands;
-using Discord.Commands;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using System.Threading;
-using System.IO;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using PnPBot.Commands;
+using PnPBot.Exceptions;
+using PnPBot.Sevices;
+using PnPBot.Sevices.Rcon;
 
 namespace PnPBot;
 
@@ -26,6 +27,8 @@ public class Program
         collection.AddSingleton<CommandService>();
 
         collection.AddSingleton<Logger>();
+        collection.AddSingleton<NgrokService>();
+        collection.AddSingleton<RconService>();
 
         collection.AddSingleton<CommandHandler>();
         collection.AddSingleton<TextCommands>();
@@ -41,7 +44,8 @@ public class Program
         client.Ready += _serviceProvider.GetRequiredService<CommandHandler>().Client_Ready;
         client.SlashCommandExecuted += _serviceProvider.GetRequiredService<CommandHandler>().SlashCommandHandler;
 
-        await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN")); //To set a permanant SystemVariable =>  setx DISCORD_BOT_TOKEN ""
+        var token = Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN") ?? throw new ConfigurationException("Environment variable 'DISCORD_BOT_TOKEN' has not been set.");
+        await client.LoginAsync(TokenType.Bot, token);
         await client.StartAsync();
 
         await Task.Delay(Timeout.Infinite);

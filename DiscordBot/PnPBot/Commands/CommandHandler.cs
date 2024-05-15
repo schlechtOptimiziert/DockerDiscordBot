@@ -1,15 +1,16 @@
-﻿using Discord;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PnPBot.Commands;
 
 public class CommandHandler
 {
+    private readonly ulong guildId = 761077082347929610;
     private readonly DiscordSocketClient _client;
     private readonly TextCommands _commands;
 
@@ -24,19 +25,19 @@ public class CommandHandler
         var guildCommands = new List<SlashCommandBuilder>()
         {
             new SlashCommandBuilder()
-                .WithName("start").WithDescription("Starts MC Server."),
+                .WithName("tunnels")
+                .WithDescription("Gets the list of running tunnels."),
             new SlashCommandBuilder()
-                .WithName("status").WithDescription("Prints the status."),
-            new SlashCommandBuilder()
-                .WithName("stop").WithDescription("Stops MC Server."),
+                .WithName("whitelistadd")
+                .WithDescription("Whitelists a user.")
+                .AddOption("name", ApplicationCommandOptionType.String, "User to be whitelisted", isRequired: true),
         };
 
         try
         {
+            //await _client.Rest.DeleteAllGlobalCommandsAsync().ConfigureAwait(false);
             foreach (var command in guildCommands)
-            {
-                await _client.Rest.CreateGlobalCommand(command.Build());
-            }
+                await _client.Rest.CreateGuildCommand(command.Build(), guildId);
         }
         catch (HttpException exception)
         {
@@ -49,14 +50,11 @@ public class CommandHandler
     {
         switch (command.Data.Name)
         {
-            case "start":
-                await _commands.StartCommand(command);
+            case "tunnels":
+                await _commands.GetTunnelsCommand(command);
                 break;
-            case "status":
-                await _commands.StatusCommand(command);
-                break;
-            case "stop":
-                await _commands.StopCommand(command);
+            case "whitelistadd":
+                await _commands.WhitelistAddCommand(command);
                 break;
         }
     }
