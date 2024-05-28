@@ -39,6 +39,7 @@ public class InteractionHandler
 
     private async Task ReadyAsync()
     {
+        await _handler.RegisterCommandsToGuildAsync(761077082347929610, true);
         await _handler.RegisterCommandsGloballyAsync(true);
     }
 

@@ -24,18 +24,46 @@ public class DockerService
     public async Task<IEnumerable<ContainerListResponse>> GetConatinersAsync()
     {
         using var dockerClient = dockerClientConfiguration.CreateClient();
-        return await dockerClient.Containers.ListContainersAsync(new ContainersListParameters() { All = true, });
+        return await dockerClient.Containers.ListContainersAsync(
+            new()
+            {
+                Filters = new Dictionary<string, IDictionary<string, bool>>
+                {
+                    ["ancestor"] = new Dictionary<string, bool>
+                    {
+                        ["itzg/minecraft-server"] = true
+                    }
+                },
+                All = true,
+            }
+        ).ConfigureAwait(false);
     }
 
-    public async Task PauseContainerAsync(string Id)
+    public async Task<string> PauseContainerAsync(string Id)
     {
+        var container = await GetContainerAsync(Id).ConfigureAwait(false);
+        if (container is null)
+            return "Id not found";
+
         using var dockerClient = dockerClientConfiguration.CreateClient();
         await dockerClient.Containers.PauseContainerAsync(Id).ConfigureAwait(false);
+        return "Done";
     }
 
-    public async Task UnpauseContainerAsync(string Id)
+    public async Task<string> UnpauseContainerAsync(string Id)
     {
+        var container = await GetContainerAsync(Id).ConfigureAwait(false);
+        if (container is null)
+            return "Id not found";
+
         using var dockerClient = dockerClientConfiguration.CreateClient();
         await dockerClient.Containers.UnpauseContainerAsync(Id).ConfigureAwait(false);
+        return "Done";
+    }
+
+    private async Task<ContainerListResponse> GetContainerAsync(string Id)
+    {
+        var response = await GetConatinersAsync().ConfigureAwait(false);
+        return response.FirstOrDefault(x => x.ID == Id);
     }
 }

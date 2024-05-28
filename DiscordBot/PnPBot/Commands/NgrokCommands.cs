@@ -15,8 +15,8 @@ public class NgrokCommands : InteractionModuleBase<SocketInteractionContext>
         this.ngrokService = ngrokService;
     }
 
-    [SlashCommand("tunnels", "Gets the list of running tunnels.")]
-    public async Task GetTunnels()
+    [SlashCommand("get-tunnels", "Gets the list of running tunnels.")]
+    public async Task GetTunnelsAsync()
     {
         var tunnels = await ngrokService.GetTunnelsAsync().ConfigureAwait(false);
 
@@ -25,11 +25,36 @@ public class NgrokCommands : InteractionModuleBase<SocketInteractionContext>
             stringBuilder.AppendLine($"{tunnel.Name} => {tunnel.Public_url}");
 
         var embedBuiler = new EmbedBuilder()
-            .WithTitle("Tunnels:")
             .WithDescription(stringBuilder.ToString())
             .WithColor(Color.DarkBlue)
             .WithCurrentTimestamp();
 
-        await RespondAsync(embed: embedBuiler.Build());
+        await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
+    }
+
+    [SlashCommand("get-tunnel", "")]
+    public async Task GetTunnelAsync(string name)
+    {
+        var tunnel = await ngrokService.GetTunnelAsync(name).ConfigureAwait(false);
+
+        var embedBuiler = new EmbedBuilder()
+            .WithDescription($"{tunnel.Name} => {tunnel.Public_url}")
+            .WithColor(Color.DarkBlue)
+            .WithCurrentTimestamp();
+
+        await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
+    }
+
+    [SlashCommand("stop-tunnel", "")]
+    public async Task StopTunnelAsync(string name)
+    {
+        var tunnel = await ngrokService.StopTunnelAsync(name).ConfigureAwait(false);
+
+        var embedBuiler = new EmbedBuilder()
+            .WithDescription(tunnel ? "Done" : "Error")
+            .WithColor(Color.DarkBlue)
+            .WithCurrentTimestamp();
+
+        await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
     }
 }

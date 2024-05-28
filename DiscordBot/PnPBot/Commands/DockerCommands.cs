@@ -1,5 +1,4 @@
-﻿using Aspose.Cells;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Docker.DotNet.Models;
 using PnPBot.Sevices;
@@ -47,11 +46,10 @@ public class DockerCommands : InteractionModuleBase<SocketInteractionContext>
             .WithCurrentTimestamp();
         await RespondAsync(embed: embedBuiler.Build());
 
-
-        await dockerService.PauseContainerAsync(Id).ConfigureAwait(false);
+        var response = await dockerService.PauseContainerAsync(Id).ConfigureAwait(false);
 
         embedBuiler = new EmbedBuilder()
-            .WithDescription("Done.")
+            .WithDescription(response)
             .WithColor(Color.DarkBlue)
             .WithCurrentTimestamp();
 
@@ -67,11 +65,10 @@ public class DockerCommands : InteractionModuleBase<SocketInteractionContext>
             .WithCurrentTimestamp();
         await RespondAsync(embed: embedBuiler.Build());
 
-
-        await dockerService.UnpauseContainerAsync(Id).ConfigureAwait(false);
+        var response = await dockerService.UnpauseContainerAsync(Id).ConfigureAwait(false);
 
         embedBuiler = new EmbedBuilder()
-            .WithDescription("Done.")
+            .WithDescription(response)
             .WithColor(Color.DarkBlue)
             .WithCurrentTimestamp();
 
