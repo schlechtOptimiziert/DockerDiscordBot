@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace PnPBot.Sevices.Ngrok;
+namespace PnPBot.Sevices;
 
 public class NgrokTunnels
 {

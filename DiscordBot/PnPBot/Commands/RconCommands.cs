@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
-using PnPBot.Sevices.Rcon;
+using PnPBot.Sevices;
 
 namespace PnPBot.Commands;
 

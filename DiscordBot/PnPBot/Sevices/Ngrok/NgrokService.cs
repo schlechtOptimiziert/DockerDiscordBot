@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using PnPBot.Exceptions;
-using PnPBot.Sevices.Ngrok;
 
 namespace PnPBot.Sevices;
 
@@ -14,7 +13,11 @@ public class NgrokService
 
     public NgrokService()
     {
+#if DEBUG
+        ngrokIp = Environment.GetEnvironmentVariable("NGROK_IP");
+#else
         ngrokIp = Environment.GetEnvironmentVariable("NGROK_IP") ?? throw new ConfigurationException("Environment variable 'NGROK_IP' has not been set.");
+#endif
     }
 
     public async Task<IEnumerable<NgrokTunnel>> GetTunnelsAsync()
