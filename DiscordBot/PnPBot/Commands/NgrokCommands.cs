@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
@@ -22,33 +23,47 @@ public class NgrokCommands : InteractionModuleBase<SocketInteractionContext>
 
         var stringBuilder = new StringBuilder();
         foreach (var tunnel in tunnels)
-            stringBuilder.AppendLine($"{tunnel.Name} => {tunnel.Public_url}");
+            stringBuilder.AppendLine($"{tunnel.name} => {tunnel.public_url}");
+        var description = stringBuilder.ToString();
 
         var embedBuiler = new EmbedBuilder()
-            .WithDescription(stringBuilder.ToString())
+            .WithDescription(string.IsNullOrWhiteSpace(description) ? "No tunnels currently active." : description)
             .WithColor(Color.DarkBlue)
             .WithCurrentTimestamp();
 
         await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
     }
 
-    [SlashCommand("get-tunnel", "")]
+    [SlashCommand("get-tunnel", "Does shit.")]
     public async Task GetTunnelAsync(string name)
     {
         var tunnel = await ngrokService.GetTunnelAsync(name).ConfigureAwait(false);
 
         var embedBuiler = new EmbedBuilder()
-            .WithDescription($"{tunnel.Name} => {tunnel.Public_url}")
+            .WithDescription($"{tunnel.name} => {tunnel.public_url}")
             .WithColor(Color.DarkBlue)
             .WithCurrentTimestamp();
 
         await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
     }
 
-    [SlashCommand("stop-tunnel", "")]
+    [SlashCommand("stop-tunnel", "Does shit.")]
     public async Task StopTunnelAsync(string name)
     {
         var tunnel = await ngrokService.StopTunnelAsync(name).ConfigureAwait(false);
+
+        var embedBuiler = new EmbedBuilder()
+            .WithDescription(tunnel ? "Done" : "Error")
+            .WithColor(Color.DarkBlue)
+            .WithCurrentTimestamp();
+
+        await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
+    }
+
+    [SlashCommand("start-tunnel", "Does shit.")]
+    public async Task StartTunnelAsync()
+    {
+        var tunnel = await ngrokService.StartTunnelAsync(new("McServerTunnel", "tcp", "192.168.0.10:25565")).ConfigureAwait(false);
 
         var embedBuiler = new EmbedBuilder()
             .WithDescription(tunnel ? "Done" : "Error")

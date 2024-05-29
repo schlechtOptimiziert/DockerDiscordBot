@@ -7,10 +7,10 @@ namespace PnPBot.Sevices;
 
 public class NgrokTunnelResponeBody
 {
-    public string Name { get; set; }
-    public string Id { get; set; }
-    public string Public_url { get; set; }
-    public string Proto { get; set; }
+    public string name { get; set; }
+    public string id { get; set; }
+    public string public_url { get; set; }
+    public string proto { get; set; }
 
     public static NgrokTunnelResponeBody GetNgrokTunnel(string objectAsString)
         => JsonConvert.DeserializeObject<NgrokTunnelResponeBody>(objectAsString);
@@ -23,14 +23,16 @@ public class NgrokTunnelResponeBody
     }
 }
 
-public class NgrokTunnelCreateRequestBody : NgrokTunnelResponeBody
+public class NgrokTunnelCreateRequestBody
 {
-    public string Addr { get; set; }
+    public string name { get; set; }
+    public string addr { get; set; }
+    public string proto { get; set; }
 
     public NgrokTunnelCreateRequestBody(string name, string protocoll, string port)
     {
-        Name = name;
-        Proto = protocoll;
-        Addr = port;
+        this.name = name;
+        proto = protocoll;
+        addr = port;
     }
 }
