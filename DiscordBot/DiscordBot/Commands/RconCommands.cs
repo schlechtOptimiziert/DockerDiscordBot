@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using DiscordBot.Sevices;
@@ -36,10 +37,7 @@ public sealed class RconCommands : InteractionModuleBase<SocketInteractionContex
 
         var output = await rconService.ExecuteRconCommand(command).ConfigureAwait(false);
 
-        embedBuiler = new EmbedBuilder()
-            .WithDescription(output)
-            .WithColor(Color.DarkBlue)
-            .WithCurrentTimestamp();
-        await FollowupAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
+        embedBuiler.WithDescription(output);
+        await ModifyOriginalResponseAsync(message => message.Embed = embedBuiler.Build()).ConfigureAwait(false);
     }
 }

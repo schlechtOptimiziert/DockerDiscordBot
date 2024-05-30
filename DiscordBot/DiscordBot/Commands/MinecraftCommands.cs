@@ -50,7 +50,6 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
         else
             stringBuilder.AppendLine($"Server is not running");
 
-
         embedBuiler.WithDescription(stringBuilder.ToString());
         await ModifyOriginalResponseAsync(message => message.Embed = embedBuiler.Build()).ConfigureAwait(false);
     }
