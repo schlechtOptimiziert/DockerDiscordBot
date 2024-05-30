@@ -33,7 +33,9 @@ public class NgrokService
     public async Task<NgrokTunnelResponeBody> GetTunnelAsync(string name)
     {
         using var response = await client.GetAsync($"http://{ngrokIp}:4040/api/tunnels/{name}").ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+            return null;
+
         var responseBody = await response.Content.ReadAsStringAsync();
         return NgrokTunnelResponeBody.GetNgrokTunnel(responseBody);
     }

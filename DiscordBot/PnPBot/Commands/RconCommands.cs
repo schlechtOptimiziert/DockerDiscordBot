@@ -14,15 +14,15 @@ public sealed class RconCommands : InteractionModuleBase<SocketInteractionContex
         this.rconService = rconService;
     }
 
-    [SlashCommand("whitelist-add", "Whitelists a user.")]
+    [SlashCommand("mc-whitelist-add", "Whitelists a user.")]
     public Task WhitelistAddCommand(string username)
         => CommandInteractionAsync($"whitelist add {username}");
 
-    [SlashCommand("whitelist-list", "Get whitelist list.")]
+    [SlashCommand("mc-whitelist-list", "Get whitelist list.")]
     public Task WhitelistListCommand()
         => CommandInteractionAsync($"whitelist list");
 
-    [SlashCommand("whitelist-remove", "Remove a user from the whitelist.")]
+    [SlashCommand("mc-whitelist-remove", "Remove a user from the whitelist.")]
     public Task WhitelistRemoveCommand(string username)
         => CommandInteractionAsync($"whitelist remove {username}");
 
