@@ -5,7 +5,7 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace PnPBot;
+namespace DiscordBot;
 
 public class InteractionHandler
 {

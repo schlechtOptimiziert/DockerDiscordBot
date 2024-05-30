@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
-using PnPBot.Sevices;
+using DiscordBot.Sevices;
 
-namespace PnPBot.Commands;
+namespace DiscordBot.Commands;
 
 public sealed class RconCommands : InteractionModuleBase<SocketInteractionContext>
 {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using PnPBot.Exceptions;
+using DiscordBot.Exceptions;
 using RconSharp;
 
-namespace PnPBot.Sevices;
+namespace DiscordBot.Sevices;
 
 public class RconService
 {

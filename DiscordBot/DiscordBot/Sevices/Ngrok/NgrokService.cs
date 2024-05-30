@@ -4,9 +4,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PnPBot.Exceptions;
+using DiscordBot.Exceptions;
+using Discord.Net;
 
-namespace PnPBot.Sevices;
+namespace DiscordBot.Sevices;
 
 public class NgrokService
 {
@@ -38,6 +39,9 @@ public class NgrokService
 
     public async Task<bool> StartTunnelAsync(NgrokTunnelCreateRequestBody request)
     {
+        if(await GetTunnelAsync(request.name).ConfigureAwait(false) is not null)
+            return true;
+
         var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
         using var response = await client.PostAsync($"http://{ngrokIp}:4040/api/tunnels", content).ConfigureAwait(false);
         return response.IsSuccessStatusCode;
@@ -45,6 +49,9 @@ public class NgrokService
 
     public async Task<bool> StopTunnelAsync(string name)
     {
+        if (await GetTunnelAsync(name).ConfigureAwait(false) is null)
+            return true;
+
         using var response = await client.DeleteAsync($"http://{ngrokIp}:4040/api/tunnels/{name}").ConfigureAwait(false);
         return response.IsSuccessStatusCode;
     }
