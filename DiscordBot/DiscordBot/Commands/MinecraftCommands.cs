@@ -1,14 +1,12 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Docker.DotNet.Models;
-using PnPBot.Sevices;
-using System;
-using System.Collections.Generic;
+using DiscordBot.Sevices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PnPBot.Commands;
+namespace DiscordBot.Commands;
 
 public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
 {

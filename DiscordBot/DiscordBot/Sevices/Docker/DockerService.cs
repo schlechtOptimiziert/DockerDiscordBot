@@ -3,10 +3,9 @@ using Docker.DotNet.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace PnPBot.Sevices;
+namespace DiscordBot.Sevices;
 
 public class DockerService
 {
@@ -40,6 +39,9 @@ public class DockerService
         if (container is null)
             return false;
 
+        if (!string.Equals(container.State, "running", StringComparison.OrdinalIgnoreCase))
+            return true;
+
         using var dockerClient = dockerClientConfiguration.CreateClient();
         await dockerClient.Containers.PauseContainerAsync(Id).ConfigureAwait(false);
         return true;
@@ -50,6 +52,9 @@ public class DockerService
         var container = await GetContainerAsync(Id).ConfigureAwait(false);
         if (container is null)
             return false;
+
+        if (string.Equals(container.State, "running", StringComparison.OrdinalIgnoreCase))
+            return true;
 
         using var dockerClient = dockerClientConfiguration.CreateClient();
         await dockerClient.Containers.UnpauseContainerAsync(Id).ConfigureAwait(false);

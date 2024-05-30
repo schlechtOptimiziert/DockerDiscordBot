@@ -2,7 +2,7 @@
 using Docker.DotNet.Models;
 using Newtonsoft.Json;
 
-namespace PnPBot.Sevices;
+namespace DiscordBot.Sevices;
 
 
 public class NgrokTunnelResponeBody

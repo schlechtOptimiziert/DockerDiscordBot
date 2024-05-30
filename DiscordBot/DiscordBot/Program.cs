@@ -5,10 +5,10 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using PnPBot.Exceptions;
-using PnPBot.Sevices;
+using DiscordBot.Exceptions;
+using DiscordBot.Sevices;
 
-namespace PnPBot;
+namespace DiscordBot;
 
 public class Program
 {
