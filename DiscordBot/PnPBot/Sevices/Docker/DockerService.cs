@@ -14,11 +14,7 @@ public class DockerService
 
     public DockerService()
     {
-#if DEBUG
-        dockerClientConfiguration = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine"));
-#else
         dockerClientConfiguration = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock"));
-#endif
     }
 
     public async Task<IEnumerable<ContainerListResponse>> GetConatinersAsync(params string[] imageNames)

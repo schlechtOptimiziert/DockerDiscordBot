@@ -12,13 +12,8 @@ public class RconService
 
     public RconService()
     {
-#if DEBUG
-        rconIp = Environment.GetEnvironmentVariable("RCON_IP");
-        rconPassword = Environment.GetEnvironmentVariable("RCON_PASSWORD");
-#else
         rconIp = Environment.GetEnvironmentVariable("RCON_IP") ?? throw new ConfigurationException("Environment variable 'RCON_IP' has not been set.");
         rconPassword = Environment.GetEnvironmentVariable("RCON_PASSWORD") ?? throw new ConfigurationException("Environment variable 'RCON_PASSWORD' has not been set.");
-#endif
     }
 
     public async Task<string> ExecuteRconCommand(string command)
