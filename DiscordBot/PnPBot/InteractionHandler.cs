@@ -39,6 +39,7 @@ public class InteractionHandler
 
     private async Task ReadyAsync()
     {
+        await _handler.RegisterCommandsToGuildAsync(761077082347929610, true);
         await _handler.RegisterCommandsGloballyAsync(true);
     }
 
@@ -51,7 +52,7 @@ public class InteractionHandler
 
 
             if (!result.IsSuccess)
-                HandleError(result.Error);
+                HandleError(result.Error, context);
         }
         catch
         {
@@ -63,20 +64,13 @@ public class InteractionHandler
     private Task HandleInteractionExecute(ICommandInfo commandInfo, IInteractionContext context, IResult result)
     {
         if (!result.IsSuccess)
-            HandleError(result.Error);
+            HandleError(result.Error, context);
 
         return Task.CompletedTask;
     }
 
-    private void HandleError(InteractionCommandError? error)
+    private void HandleError(InteractionCommandError? error, IInteractionContext context)
     {
-        switch (error)
-        {
-            case InteractionCommandError.UnmetPrecondition:
-                // implement
-                break;
-            default:
-                break;
-        }
+        context.Channel.SendMessageAsync("Whoopsy. Seems like something went wrong. Totally your fault though. :]");
     }
 }

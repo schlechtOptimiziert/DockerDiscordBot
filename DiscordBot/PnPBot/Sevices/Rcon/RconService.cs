@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using PnPBot.Exceptions;
 using RconSharp;
 
-namespace PnPBot.Sevices.Rcon;
+namespace PnPBot.Sevices;
 
 public class RconService
 {

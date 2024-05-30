@@ -1,20 +1,38 @@
 ﻿using System.Collections.Generic;
+using Docker.DotNet.Models;
 using Newtonsoft.Json;
 
-namespace PnPBot.Sevices.Ngrok;
+namespace PnPBot.Sevices;
 
-public class NgrokTunnels
+
+public class NgrokTunnelResponeBody
 {
-    public IEnumerable<NgrokTunnel> tunnels { get; set; }
+    public string name { get; set; }
+    public string id { get; set; }
+    public string public_url { get; set; }
+    public string proto { get; set; }
 
-    public static NgrokTunnels GetNgrokTunnels(string objectAsString)
-        => JsonConvert.DeserializeObject<NgrokTunnels>(objectAsString);
+    public static NgrokTunnelResponeBody GetNgrokTunnel(string objectAsString)
+        => JsonConvert.DeserializeObject<NgrokTunnelResponeBody>(objectAsString);
+
+    public static IEnumerable<NgrokTunnelResponeBody> GetNgrokTunnels(string objectAsString)
+        => JsonConvert.DeserializeObject<NgrokTunnels>(objectAsString).Tunnels;
+    class NgrokTunnels
+    {
+        public IEnumerable<NgrokTunnelResponeBody> Tunnels { get; set; }
+    }
 }
 
-
-public class NgrokTunnel
+public class NgrokTunnelCreateRequestBody
 {
-    public string Name { get; set; }
-    public string Id { get; set; }
-    public string Public_url { get; set; }
+    public string name { get; set; }
+    public string addr { get; set; }
+    public string proto { get; set; }
+
+    public NgrokTunnelCreateRequestBody(string name, string protocoll, string port)
+    {
+        this.name = name;
+        proto = protocoll;
+        addr = port;
+    }
 }

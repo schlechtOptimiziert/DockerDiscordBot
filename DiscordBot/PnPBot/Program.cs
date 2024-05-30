@@ -7,7 +7,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using PnPBot.Exceptions;
 using PnPBot.Sevices;
-using PnPBot.Sevices.Rcon;
 
 namespace PnPBot;
 
@@ -22,6 +21,7 @@ public class Program
 
             .AddSingleton<NgrokService>()
             .AddSingleton<RconService>()
+            .AddSingleton<DockerService>()
 
             .BuildServiceProvider();
 
