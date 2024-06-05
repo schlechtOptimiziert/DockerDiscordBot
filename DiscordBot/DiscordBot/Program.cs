@@ -7,6 +7,9 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using DiscordBot.Exceptions;
 using DiscordBot.Sevices;
+using Docker.DotNet.Models;
+using Docker.DotNet;
+using System.Collections.Generic;
 
 namespace DiscordBot;
 

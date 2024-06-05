@@ -1,4 +1,5 @@
-﻿using Docker.DotNet;
+﻿using DiscordBot.Sevices.Docker;
+using Docker.DotNet;
 using Docker.DotNet.Models;
 using System;
 using System.Collections.Generic;
@@ -33,31 +34,28 @@ public class DockerService
         return await dockerClient.Containers.ListContainersAsync(filter).ConfigureAwait(false);
     }
 
-    public async Task<bool> PauseContainerAsync(string Id)
+    public async Task<bool> CreateContainerAsync(DockerContainer container)
     {
-        var container = await GetContainerAsync(Id).ConfigureAwait(false);
-        if (container is null)
+        using var dockerClient = dockerClientConfiguration.CreateClient();
+        var response = await dockerClient.Containers.CreateContainerAsync(container.ToCreateParameters()).ConfigureAwait(false);
+        if(response.Warnings.Any())
             return false;
 
-        if (!string.Equals(container.State, "running", StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        using var dockerClient = dockerClientConfiguration.CreateClient();
-        await dockerClient.Containers.PauseContainerAsync(Id).ConfigureAwait(false);
+        await dockerClient.Containers.StartContainerAsync(response.ID, new()).ConfigureAwait(false);
         return true;
     }
 
-    public async Task<bool> UnpauseContainerAsync(string Id)
+    public async Task<bool> RemoveContainerAsync(string Id)
     {
         var container = await GetContainerAsync(Id).ConfigureAwait(false);
         if (container is null)
             return false;
 
-        if (string.Equals(container.State, "running", StringComparison.OrdinalIgnoreCase))
-            return true;
-
         using var dockerClient = dockerClientConfiguration.CreateClient();
-        await dockerClient.Containers.UnpauseContainerAsync(Id).ConfigureAwait(false);
+        if (string.Equals(container.State, "running", StringComparison.OrdinalIgnoreCase))
+            await dockerClient.Containers.StopContainerAsync(Id, new()).ConfigureAwait(false);
+
+        await dockerClient.Containers.RemoveContainerAsync(Id, new()).ConfigureAwait(false);
         return true;
     }
 

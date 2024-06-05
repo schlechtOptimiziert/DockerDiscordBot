@@ -64,7 +64,7 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
         await RespondAsync(embed: embedBuiler.Build());
 
         await StartTunnelAsync().ConfigureAwait(false);
-        await UnpauseContainerAsync().ConfigureAwait(false);
+        await CreateContainerAsync().ConfigureAwait(false);
 
 
         embedBuiler.WithDescription("Done.");
@@ -81,14 +81,14 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
         await RespondAsync(embed: embedBuiler.Build());
 
         await StopTunnelAsync().ConfigureAwait(false);
-        await PauseContainerAsync().ConfigureAwait(false);
+        await RemoveContainerAsync().ConfigureAwait(false);
 
         embedBuiler.WithDescription("Done.");
         await ModifyOriginalResponseAsync(message => message.Embed = embedBuiler.Build()).ConfigureAwait(false);
     }
 
     private Task<bool> StartTunnelAsync()
-        => ngrokService.StartTunnelAsync(new(tunnelName, "tcp", "192.168.0.10:25565"));
+        => ngrokService.StartTunnelAsync(new(tunnelName, "tcp", "localhost:25565"));
 
     private Task<bool> StopTunnelAsync()
         => ngrokService.StopTunnelAsync(tunnelName);
@@ -97,23 +97,17 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
         => ngrokService.GetTunnelAsync(tunnelName);
 
     private async Task<ContainerListResponse> GetContainerAsync()
-        => (await dockerService.GetConatinersAsync(imageName).ConfigureAwait(false)).First();
+        => (await dockerService.GetConatinersAsync(imageName).ConfigureAwait(false)).FirstOrDefault();
 
-    private async Task<bool> PauseContainerAsync()
+    private async Task<bool> RemoveContainerAsync()
     {
         var container = await GetContainerAsync().ConfigureAwait(false);
         if (container is null)
             return false;
 
-        return await dockerService.PauseContainerAsync(container.ID).ConfigureAwait(false);
+        return await dockerService.RemoveContainerAsync(container.ID).ConfigureAwait(false);
     }
 
-    private async Task<bool> UnpauseContainerAsync()
-    {
-        var container = await GetContainerAsync().ConfigureAwait(false);
-        if (container is null)
-            return false;
-
-        return await dockerService.UnpauseContainerAsync(container.ID).ConfigureAwait(false);
-    }
+    private Task<bool> CreateContainerAsync()
+        => dockerService.CreateContainerAsync(new());
 }
