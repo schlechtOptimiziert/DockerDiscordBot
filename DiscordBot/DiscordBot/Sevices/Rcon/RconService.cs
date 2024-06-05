@@ -23,6 +23,9 @@ public class RconService
         if (!await rconClient.AuthenticateAsync(rconPassword).ConfigureAwait(false))
             return "Rcon authentication failed. Could be cause of a incorrect rcon password. This is a configuration failiure. This has nothing to do with the discord bot or its user. :)";
 
-        return await rconClient.ExecuteCommandAsync(command).ConfigureAwait(false);
+        var result = await rconClient.ExecuteCommandAsync(command).ConfigureAwait(false);
+        rconClient.Disconnect();
+
+        return result;
     }
 }
