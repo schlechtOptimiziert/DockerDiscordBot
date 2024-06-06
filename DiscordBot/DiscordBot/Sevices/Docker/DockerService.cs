@@ -17,18 +17,18 @@ public class DockerService
         dockerClientConfiguration = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock"));
     }
 
-    public async Task<IEnumerable<ContainerListResponse>> GetConatinersAsync(params string[] imageNames)
+    public async Task<IEnumerable<ContainerListResponse>> GetConatinersAsync(IEnumerable<string> names)
     {
         using var dockerClient = dockerClientConfiguration.CreateClient();
-        var filter = new ContainersListParameters() { All= true };
+        var filter = new ContainersListParameters() { All = true };
         
-        if (imageNames.Any())
+        if (names.Any())
         {
-            var acceptedImages = new Dictionary<string, bool>();
-            foreach (var imageName in imageNames)
-                acceptedImages[imageName] = true;
+            var acceptedNames = new Dictionary<string, bool>();
+            foreach (var name in names)
+                acceptedNames[name] = true;
 
-            filter.Filters = new Dictionary<string, IDictionary<string, bool>> { ["ancestor"] = acceptedImages };
+            filter.Filters = new Dictionary<string, IDictionary<string, bool>> { ["name"] = acceptedNames };
         }
         
         return await dockerClient.Containers.ListContainersAsync(filter).ConfigureAwait(false);
@@ -45,23 +45,17 @@ public class DockerService
         return true;
     }
 
-    public async Task<bool> RemoveContainerAsync(string Id)
+    public async Task RemoveContainerAsync(DockerContainer container)
     {
-        var container = await GetContainerAsync(Id).ConfigureAwait(false);
-        if (container is null)
-            return false;
-
+        var dockerContainers = await GetConatinersAsync(new string[] { container.Name }).ConfigureAwait(false);
         using var dockerClient = dockerClientConfiguration.CreateClient();
-        if (string.Equals(container.State, "running", StringComparison.OrdinalIgnoreCase))
-            await dockerClient.Containers.StopContainerAsync(Id, new()).ConfigureAwait(false);
+        
+        foreach(var dockerContainer in dockerContainers)
+        {
+            if (string.Equals(dockerContainer.State, "running", StringComparison.OrdinalIgnoreCase))
+                await dockerClient.Containers.StopContainerAsync(dockerContainer.ID, new()).ConfigureAwait(false);
 
-        await dockerClient.Containers.RemoveContainerAsync(Id, new()).ConfigureAwait(false);
-        return true;
-    }
-
-    private async Task<ContainerListResponse> GetContainerAsync(string Id)
-    {
-        var response = await GetConatinersAsync().ConfigureAwait(false);
-        return response.FirstOrDefault(x => x.ID == Id);
+            await dockerClient.Containers.RemoveContainerAsync(dockerContainer.ID, new()).ConfigureAwait(false);
+        }
     }
 }

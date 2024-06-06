@@ -1,6 +1,9 @@
 ﻿using Docker.DotNet.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,28 +17,6 @@ public class DockerContainer
     public Dictionary<string, string> PortBindings { get; set; }
     public Dictionary<string, string> EnvironmentVariables { get; set; }
     public Dictionary<string, string> MountedVolumes { get; set; }
-
-    public DockerContainer()
-    {
-        Name = "mcserver";
-        Image = "itzg/minecraft-server";
-        PortBindings = new()
-        {
-            { "25565", "25565" },
-            { "25575", "25575" },
-        };
-        EnvironmentVariables = new()
-        {
-            { "EULA", "TRUE" },
-            { "VERSION", "1.20.4" },
-            { "DIFFICULTY", "normal" },
-            { "SPAWN_PROTECTION", "0" },
-            { "ENABLE_WHITELIST", "TRUE" },
-            { "ENABLE_RCON", "TRUE" },
-            { "RCON_PASSWORD", "RconPassword" },
-        };
-        MountedVolumes = new() { { "F:/private/DockerDiscordBot/Server", "/data" } };
-    }
 
     public CreateContainerParameters ToCreateParameters()
     {

@@ -5,109 +5,71 @@ using DiscordBot.Sevices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordBot.Sevices.Docker;
 
 namespace DiscordBot.Commands;
 
-public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
+public class MinecraftCommands : SlashCommandBase
 {
-    private readonly string tunnelName = "McServerTunnel";
-    private readonly string imageName = "itzg/minecraft-server";
-
     private readonly NgrokService ngrokService;
     private readonly DockerService dockerService;
+    private readonly DockerBlueprintService dockerBlueprintService;
 
-    public MinecraftCommands(NgrokService ngrokService, DockerService dockerService)
+    public MinecraftCommands(NgrokService ngrokService, DockerService dockerService, DockerBlueprintService dockerBlueprintService)
     {
         this.ngrokService = ngrokService;
         this.dockerService = dockerService;
+        this.dockerBlueprintService = dockerBlueprintService;
     }
 
-    [SlashCommand("mc-status", "Gets the status of the minecraft server.")]
-    public async Task GetStatusAsync()
-    {
-        var embedBuiler = new EmbedBuilder()
-            .WithDescription("Fetching...")
-            .WithColor(Color.DarkBlue)
-            .WithCurrentTimestamp();
-        await RespondAsync(embed: embedBuiler.Build());
-
-        var tunnel = await GetTunnelAsync().ConfigureAwait(false);
-        var container = await GetContainerAsync().ConfigureAwait(false);
-        
-        var stringBuilder = new StringBuilder();
-        if (tunnel is not null)
-        {
-            stringBuilder.AppendLine("tunnel is running");
-            stringBuilder.AppendLine($"{tunnel.name} => {tunnel.public_url}");
-        }
-        else
-        {
-            stringBuilder.AppendLine("tunnel is offline");
-        }
-
-        if (container is not null)
-            stringBuilder.AppendLine($"Server is {container.State}");
-        else
-            stringBuilder.AppendLine($"Server is not running");
-
-        embedBuiler.WithDescription(stringBuilder.ToString());
-        await ModifyOriginalResponseAsync(message => message.Embed = embedBuiler.Build()).ConfigureAwait(false);
-    }
+    //[SlashCommand("mc-status", "Gets the status of the minecraft server.")]
+    //public async Task GetStatusAsync()
+    //{ }
 
     [SlashCommand("mc-start", "Starts the minecraft server.")]
-    public async Task StartAsync()
+    public async Task StartAsync(string name)
     {
-        var embedBuiler = new EmbedBuilder()
-            .WithDescription("On it.")
-            .WithColor(Color.DarkBlue)
-            .WithCurrentTimestamp();
-        await RespondAsync(embed: embedBuiler.Build());
+        await RespondAsync().ConfigureAwait(false);
 
-        await StartTunnelAsync().ConfigureAwait(false);
-        await CreateContainerAsync().ConfigureAwait(false);
+        var container = dockerBlueprintService.GetBlueprint(name);
+        if (container is null)
+        {
+            await ModifyResponseAsync($"Containerblueprint with name '{name}' was not found.", Color.Red).ConfigureAwait(false);
+            return;
+        }
 
+        var output = await dockerService.CreateContainerAsync(container).ConfigureAwait(false);
+        if (!output)
+        {
+            await ModifyResponseAsync($"Container could not be created with blueprint '{name}'.", Color.Red).ConfigureAwait(false);
+            return;
+        }
 
-        embedBuiler.WithDescription("Done.");
-        await ModifyOriginalResponseAsync(message => message.Embed = embedBuiler.Build()).ConfigureAwait(false);
+        output = await ngrokService.StartTunnelAsync(new(container.Name, "tcp", "localhost:25565")).ConfigureAwait(false);
+        if (!output)
+        {
+            await ModifyResponseAsync($"Tunnel could not be created '{name}'.", Color.Red).ConfigureAwait(false);
+            return;
+        }
+
+        await ModifyResponseAsync("Done.", Color.Green).ConfigureAwait(false);
     }
 
     [SlashCommand("mc-stop", "Stops the minecraft server.")]
-    public async Task StopAsync()
+    public async Task StopAsync(string name)
     {
-        var embedBuiler = new EmbedBuilder()
-            .WithDescription("On it.")
-            .WithColor(Color.DarkBlue)
-            .WithCurrentTimestamp();
-        await RespondAsync(embed: embedBuiler.Build());
+        await RespondAsync().ConfigureAwait(false);
 
-        await StopTunnelAsync().ConfigureAwait(false);
-        await RemoveContainerAsync().ConfigureAwait(false);
-
-        embedBuiler.WithDescription("Done.");
-        await ModifyOriginalResponseAsync(message => message.Embed = embedBuiler.Build()).ConfigureAwait(false);
-    }
-
-    private Task<bool> StartTunnelAsync()
-        => ngrokService.StartTunnelAsync(new(tunnelName, "tcp", "localhost:25565"));
-
-    private Task<bool> StopTunnelAsync()
-        => ngrokService.StopTunnelAsync(tunnelName);
-
-    private Task<NgrokTunnelResponeBody> GetTunnelAsync()
-        => ngrokService.GetTunnelAsync(tunnelName);
-
-    private async Task<ContainerListResponse> GetContainerAsync()
-        => (await dockerService.GetConatinersAsync(imageName).ConfigureAwait(false)).FirstOrDefault();
-
-    private async Task<bool> RemoveContainerAsync()
-    {
-        var container = await GetContainerAsync().ConfigureAwait(false);
+        var container = dockerBlueprintService.GetBlueprint(name);
         if (container is null)
-            return false;
+        {
+            await ModifyResponseAsync($"Containerblueprint with name '{name}' was not found.", Color.Red).ConfigureAwait(false);
+            return;
+        }
 
-        return await dockerService.RemoveContainerAsync(container.ID).ConfigureAwait(false);
+        await dockerService.RemoveContainerAsync(container).ConfigureAwait(false);
+        await ngrokService.StopTunnelAsync(container.Name).ConfigureAwait(false);
+
+        await ModifyResponseAsync("Done.", Color.Green).ConfigureAwait(false);
     }
-
-    private Task<bool> CreateContainerAsync()
-        => dockerService.CreateContainerAsync(new());
 }
