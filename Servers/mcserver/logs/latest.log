@@ -1,0 +1,35 @@
+[19:29:40] [ServerMain/INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[19:29:41] [ServerMain/INFO]: Loaded 7 recipes
+[19:29:41] [ServerMain/INFO]: Loaded 1271 advancements
+[19:29:42] [Server thread/INFO]: Starting minecraft server version 1.20.4
+[19:29:42] [Server thread/INFO]: Loading properties
+[19:29:42] [Server thread/INFO]: Default game type: SURVIVAL
+[19:29:42] [Server thread/INFO]: Generating keypair
+[19:29:42] [Server thread/INFO]: Starting Minecraft server on *:25565
+[19:29:42] [Server thread/INFO]: Using epoll channel type
+[19:29:42] [Server thread/INFO]: Preparing level "world"
+[19:29:42] [Server thread/INFO]: Preparing start region for dimension minecraft:overworld
+[19:29:43] [Worker-Main-17/INFO]: Preparing spawn area: 0%
+[19:29:43] [Worker-Main-1/INFO]: Preparing spawn area: 0%
+[19:29:43] [Worker-Main-15/INFO]: Preparing spawn area: 0%
+[19:29:44] [Worker-Main-18/INFO]: Preparing spawn area: 0%
+[19:29:44] [Worker-Main-2/INFO]: Preparing spawn area: 10%
+[19:29:45] [Server thread/INFO]: Time elapsed: 2371 ms
+[19:29:45] [Server thread/INFO]: Done (2.842s)! For help, type "help"
+[19:29:45] [Server thread/INFO]: Starting remote control listener
+[19:29:45] [Server thread/INFO]: Thread RCON Listener started
+[19:29:45] [Server thread/INFO]: RCON running on 0.0.0.0:25575
+[19:36:24] [RCON Listener #1/INFO]: Thread RCON Client /0:0:0:0:0:0:0:1 started
+[19:36:24] [Server thread/INFO]: [Rcon: Stopping the server]
+[19:36:24] [RCON Client /0:0:0:0:0:0:0:1 #2/INFO]: Thread RCON Client /0:0:0:0:0:0:0:1 shutting down
+[19:36:24] [Server thread/INFO]: Stopping server
+[19:36:24] [Server thread/INFO]: Saving players
+[19:36:24] [Server thread/INFO]: Saving worlds
+[19:36:24] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[19:36:24] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+[19:36:24] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+[19:36:24] [Server thread/INFO]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[19:36:24] [Server thread/INFO]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[19:36:24] [Server thread/INFO]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[19:36:24] [Server thread/INFO]: ThreadedAnvilChunkStorage: All dimensions are saved
+[19:36:24] [Server thread/INFO]: Thread RCON Listener stopped
