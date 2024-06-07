@@ -15,12 +15,10 @@ services:
     environment:
       DISCORD_BOT_TOKEN: "To be set"
       NGROK_IP: "localhost"
-      RCON_IP: "localhost"
-      RCON_PASSWORD: "RconPassword"
     network_mode: "host"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./Blueprints:/Blueprints
+      - ./Servers:/Servers
     depends_on:
       ngrok:
         condition: service_started

@@ -34,10 +34,10 @@ public class DockerService
         return await dockerClient.Containers.ListContainersAsync(filter).ConfigureAwait(false);
     }
 
-    public async Task<bool> CreateContainerAsync(DockerContainer container)
+    public async Task<bool> CreateContainerAsync(ServerConfig container)
     {
         using var dockerClient = dockerClientConfiguration.CreateClient();
-        var response = await dockerClient.Containers.CreateContainerAsync(container.ToCreateParameters()).ConfigureAwait(false);
+        var response = await dockerClient.Containers.CreateContainerAsync(container.ToContainerCreateParameters()).ConfigureAwait(false);
         if(response.Warnings.Any())
             return false;
 
@@ -45,7 +45,7 @@ public class DockerService
         return true;
     }
 
-    public async Task RemoveContainerAsync(DockerContainer container)
+    public async Task RemoveContainerAsync(ServerConfig container)
     {
         var dockerContainers = await GetConatinersAsync(new string[] { container.Name }).ConfigureAwait(false);
         using var dockerClient = dockerClientConfiguration.CreateClient();

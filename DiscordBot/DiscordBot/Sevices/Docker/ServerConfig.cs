@@ -1,24 +1,18 @@
 ﻿using Docker.DotNet.Models;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DiscordBot.Sevices.Docker;
 
-public class DockerContainer
+public class ServerConfig
 {
     public string Name { get; set; }
     public string Image { get; set; }
+    public string NgrokPort { get; set; }
     public Dictionary<string, string> PortBindings { get; set; }
     public Dictionary<string, string> EnvironmentVariables { get; set; }
     public Dictionary<string, string> MountedVolumes { get; set; }
 
-    public CreateContainerParameters ToCreateParameters()
+    public CreateContainerParameters ToContainerCreateParameters()
     {
         var env = new List<string>();
         foreach (var environmentVariable in EnvironmentVariables)

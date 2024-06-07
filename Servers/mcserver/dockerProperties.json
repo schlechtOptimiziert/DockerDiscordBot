@@ -5,6 +5,7 @@
         "25565": "25565",
         "25575": "25575"
     },
+    "NgrokPort": "25565",
     "EnvironmentVariables": {
         "EULA": "TRUE",
         "VERSION": "1.20.4",

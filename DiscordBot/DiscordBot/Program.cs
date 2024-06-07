@@ -23,7 +23,7 @@ public class Program
             .AddSingleton<NgrokService>()
             .AddSingleton<RconService>()
             .AddSingleton<DockerService>()
-            .AddSingleton<DockerBlueprintService>()
+            .AddSingleton<DockerServerService>()
 
             .BuildServiceProvider();
 
