@@ -11,5 +11,5 @@ bld/
 [Oo]bj/
 [Ll]og/
 
-/Server/*
+/Servers/mcserver/Gamesave
 !/Server/Here-is-the-game-save

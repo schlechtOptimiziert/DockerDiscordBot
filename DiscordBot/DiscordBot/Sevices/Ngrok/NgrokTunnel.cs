@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace DiscordBot.Sevices;
 
-
 public class NgrokTunnelResponeBody
 {
     public string name { get; set; }
@@ -20,19 +19,5 @@ public class NgrokTunnelResponeBody
     class NgrokTunnels
     {
         public IEnumerable<NgrokTunnelResponeBody> Tunnels { get; set; }
-    }
-}
-
-public class NgrokTunnelCreateRequestBody
-{
-    public string name { get; set; }
-    public string addr { get; set; }
-    public string proto { get; set; }
-
-    public NgrokTunnelCreateRequestBody(string name, string protocoll, string port)
-    {
-        this.name = name;
-        proto = protocoll;
-        addr = port;
     }
 }

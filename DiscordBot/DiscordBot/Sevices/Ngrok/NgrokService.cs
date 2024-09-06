@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using DiscordBot.Exceptions;
 using Discord.Net;
+using DiscordBot.Sevices.Docker;
 
 namespace DiscordBot.Sevices;
 

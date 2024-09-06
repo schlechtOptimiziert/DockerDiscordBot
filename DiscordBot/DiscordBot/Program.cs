@@ -19,12 +19,9 @@ public class Program
             .AddSingleton<DiscordSocketClient>()
             .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
             .AddSingleton<InteractionHandler>()
-
             .AddSingleton<NgrokService>()
             .AddSingleton<RconService>()
             .AddSingleton<DockerService>()
-            .AddSingleton<DockerServerService>()
-
             .BuildServiceProvider();
 
         var client = _serviceProvider.GetRequiredService<DiscordSocketClient>();

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DiscordBot.Sevices.Docker;
+using System;
 
 namespace DiscordBot.Commands;
 
@@ -13,13 +14,11 @@ public class ServerCommands : SlashCommandBase
 {
     private readonly NgrokService ngrokService;
     private readonly DockerService dockerService;
-    private readonly DockerServerService dockerServerService;
 
-    public ServerCommands(NgrokService ngrokService, DockerService dockerService, DockerServerService dockerServerService)
+    public ServerCommands(NgrokService ngrokService, DockerService dockerService)
     {
-        this.ngrokService = ngrokService;
-        this.dockerService = dockerService;
-        this.dockerServerService = dockerServerService;
+        this.ngrokService = ngrokService ?? throw new ArgumentNullException(nameof(ngrokService));
+        this.dockerService = dockerService ?? throw new ArgumentNullException(nameof(dockerService));
     }
 
     [SlashCommand("server-list", "Lists the servers.")]
@@ -28,7 +27,7 @@ public class ServerCommands : SlashCommandBase
         await RespondAsync().ConfigureAwait(false);
 
         var stringBuilder = new StringBuilder();
-        var serverNames = dockerServerService.GetServerNames();
+        var serverNames = dockerService.GetServerNames();
 
         stringBuilder.AppendLine("Servers:");
         foreach (var serverName in serverNames)
@@ -37,7 +36,8 @@ public class ServerCommands : SlashCommandBase
             if (excistingContainers.Any())
             {
                 var excistingContainer = excistingContainers.FirstOrDefault();
-                var tunnel = await ngrokService.GetTunnelAsync(serverName).ConfigureAwait(false);
+                var serverConfig = dockerService.GetServerConfig(serverName);
+                var tunnel = await ngrokService.GetTunnelAsync(serverConfig.NgrokConfig.name).ConfigureAwait(false);
 
                 stringBuilder.AppendLine($"({string.Join(", ", excistingContainer.Names)})");
                 stringBuilder.AppendLine(excistingContainer.State);
@@ -60,7 +60,7 @@ public class ServerCommands : SlashCommandBase
     {
         await RespondAsync().ConfigureAwait(false);
 
-        var serverConfig = dockerServerService.GetServerContainer(serverName);
+        var serverConfig = dockerService.GetServerConfig(serverName);
         if (serverConfig is null)
         {
             await ModifyResponseAsync($"Server with name '{serverName}' was not found.", Color.Red).ConfigureAwait(false);
@@ -74,13 +74,6 @@ public class ServerCommands : SlashCommandBase
             return;
         }
 
-        output = await ngrokService.StartTunnelAsync(new(serverConfig.Name, "tcp", $"localhost:{serverConfig.NgrokPort}")).ConfigureAwait(false);
-        if (!output)
-        {
-            await ModifyResponseAsync($"Tunnel for server '{serverName}' could not be created.", Color.Red).ConfigureAwait(false);
-            return;
-        }
-
         await ModifyResponseAsync("Done.", Color.Green).ConfigureAwait(false);
     }
 
@@ -89,7 +82,7 @@ public class ServerCommands : SlashCommandBase
     {
         await RespondAsync().ConfigureAwait(false);
 
-        var serverConfig = dockerServerService.GetServerContainer(serverName);
+        var serverConfig = dockerService.GetServerConfig(serverName);
         if (serverConfig is null)
         {
             await ModifyResponseAsync($"Server with name '{serverName}' was not found.", Color.Red).ConfigureAwait(false);
@@ -97,8 +90,6 @@ public class ServerCommands : SlashCommandBase
         }
 
         await dockerService.RemoveContainerAsync(serverConfig).ConfigureAwait(false);
-        await ngrokService.StopTunnelAsync(serverConfig.Name).ConfigureAwait(false);
-
         await ModifyResponseAsync("Done.", Color.Green).ConfigureAwait(false);
     }
 }

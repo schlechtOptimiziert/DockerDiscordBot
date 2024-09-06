@@ -29,7 +29,7 @@ public class NgrokCommands : InteractionModuleBase<SocketInteractionContext>
 
         var embedBuiler = new EmbedBuilder()
             .WithDescription(string.IsNullOrWhiteSpace(description) ? "No tunnels currently active." : description)
-            .WithColor(Color.DarkBlue)
+            .WithColor(Color.Green)
             .WithCurrentTimestamp();
 
         await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);
@@ -43,7 +43,7 @@ public class NgrokCommands : InteractionModuleBase<SocketInteractionContext>
 
         var embedBuiler = new EmbedBuilder()
             .WithDescription(tunnel ? "Done" : "Error")
-            .WithColor(Color.DarkBlue)
+            .WithColor(Color.Green)
             .WithCurrentTimestamp();
 
         await RespondAsync(embed: embedBuiler.Build()).ConfigureAwait(false);

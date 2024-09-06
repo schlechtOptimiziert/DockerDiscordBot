@@ -1,20 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using DiscordBot.Sevices;
-using DiscordBot.Sevices.Docker;
 
 namespace DiscordBot.Commands;
 
 public sealed class RconCommands : SlashCommandBase
 {
     private readonly RconService rconService;
-    private readonly DockerServerService dockerServerService;
+    private readonly DockerService dockerServerService;
 
-    public RconCommands(RconService rconService, DockerServerService dockerServerService)
+    public RconCommands(RconService rconService, DockerService dockerServerService)
     {
-        this.rconService = rconService;
-        this.dockerServerService = dockerServerService;
+        this.rconService = rconService ?? throw new ArgumentNullException(nameof(rconService));
+        this.dockerServerService = dockerServerService ?? throw new ArgumentNullException(nameof(dockerServerService));
     }
 
     [SlashCommand("mc-whitelist-add", "Whitelists a user.")]
@@ -33,7 +33,7 @@ public sealed class RconCommands : SlashCommandBase
     {
         await RespondAsync().ConfigureAwait(false);
 
-        var serverConfig = dockerServerService.GetServerContainer(serverName);
+        var serverConfig = dockerServerService.GetServerConfig(serverName);
         if (serverConfig is null)
         {
             await ModifyResponseAsync($"Server with name '{serverName}' was not found.", Color.Red).ConfigureAwait(false);

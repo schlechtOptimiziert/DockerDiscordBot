@@ -11,6 +11,7 @@ public class ServerConfig
     public Dictionary<string, string> PortBindings { get; set; }
     public Dictionary<string, string> EnvironmentVariables { get; set; }
     public Dictionary<string, string> MountedVolumes { get; set; }
+    public NgrokTunnelCreateRequestBody NgrokConfig { get; set; }
 
     public CreateContainerParameters ToContainerCreateParameters()
     {
@@ -43,4 +44,11 @@ public class ServerConfig
             },
         };
     }
+}
+
+public class NgrokTunnelCreateRequestBody
+{
+    public string name { get; set; }
+    public string addr { get; set; }
+    public string proto { get; set; }
 }

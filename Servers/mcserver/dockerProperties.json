@@ -5,7 +5,11 @@
         "25565": "25565",
         "25575": "25575"
     },
-    "NgrokPort": "25565",
+    "NgrokConfig": {
+        "name": "mcservertunnel",
+        "addr": "25565",
+        "proto": "tcp"
+    },
     "EnvironmentVariables": {
         "EULA": "TRUE",
         "VERSION": "1.20.4",
@@ -16,6 +20,6 @@
         "RCON_PASSWORD": "RconPassword"
     },
     "MountedVolumes": {
-        "F:/private/DockerDiscordBot/Server": "/data"
+        "F:/private/DockerDiscordBot/Servers/mcserver/Gamesave": "/data"
     }
 }
