@@ -8,5 +8,5 @@
 
 # Run
 1. Open a terminal in the folder with the docker compose
-2. Paste "docker composer up -d" into the terminal + execute it
+2. Paste "docker compose up -d" into the terminal + execute it
 3. Wait until the container are up and enjoy ;)
